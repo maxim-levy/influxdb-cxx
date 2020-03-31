@@ -8,6 +8,7 @@
 #include <chrono>
 #include <memory>
 #include <sstream>
+#include <iomanip>
 
 namespace influxdb
 {
@@ -32,7 +33,7 @@ Point&& Point::addField(std::string_view name, std::variant<int, long long int, 
   std::visit(overloaded {
     [&convert](int value) { convert << value << 'i'; },
     [&convert](long long int value) { convert << value << 'i'; },
-    [&convert](double value) { convert << value; },
+    [&convert](double value) { convert << std::setprecision(std::numeric_limits<long double>::digits10 + 1) << value; },
     [&convert](const std::string& value) { convert << '"' << value << '"'; },
     }, value);
   mFields += convert.str();
